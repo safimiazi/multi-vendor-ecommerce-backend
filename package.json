@@ -1,4 +1,14 @@
 {
+  "scripts": {
+    "generateModule": "node scripts/generate-module.js",
+    "build": "tsc",
+    "start:prod": "node ./dist/server.js",
+    "start:dev": "ts-node-dev --respawn --transpile-only ./src/server.ts",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "prettier": "prettier --ignore-path .gitignore --write \"./src/**/*.+(js|ts|json)\"",
+    "prettier:fix": "prettier --write src"
+  },
   "dependencies": {
     "bcryptjs": "^3.0.2",
     "body-parser": "^2.2.0",
@@ -6,9 +16,12 @@
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
+    "http-status": "^2.1.0",
     "jsonwebtoken": "^9.0.2",
+    "mongodb": "^6.15.0",
     "mongoose": "^8.13.2",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "zod": "^3.24.3"
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.8",
@@ -21,20 +34,5 @@
   },
   "name": "multi-vendor-ecommerce-backend",
   "version": "1.0.0",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/safimiazi/restaurant-backend.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/safimiazi/restaurant-backend/issues"
-  },
-  "homepage": "https://github.com/safimiazi/restaurant-backend#readme",
-  "description": ""
+  "main": "index.js"
 }
