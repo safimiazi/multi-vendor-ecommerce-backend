@@ -1,1 +1,1 @@
-export const BRAND_SEARCHABLE_FIELDS = [];
+export const BRAND_SEARCHABLE_FIELDS = ["brandName"];
