@@ -15,6 +15,7 @@ const Register = catchAsync(async (req: Request, res: Response) => {
     throw new AppError(status.CONFLICT, "User already exists");
   }
 
+
   // create user:
   // const newUser = await usersModel.create(req.body);
 console.log(req.body);
