@@ -47,7 +47,7 @@ const Login = catchAsync(async (req: Request, res: Response, next: NextFunction)
 
     // generate token:
     const token = generateToken(
-      { userId: user._id, role: user.role },
+      { userId: user._id, role: user.role },  
       process.env.JWT_SECRET as string,
       process.env.JWT_EXPIRES_IN as unknown as number
     );
@@ -57,7 +57,7 @@ const Login = catchAsync(async (req: Request, res: Response, next: NextFunction)
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-      maxAge: Number(process.env.JWT_EXPIRES_IN) * 1000 || 24 * 60 * 60 * 1000, // 1 day
+      maxAge: Number(process.env.JWT_EXPIRES_IN) * 1000, // Convert to milliseconds
     });
 
 

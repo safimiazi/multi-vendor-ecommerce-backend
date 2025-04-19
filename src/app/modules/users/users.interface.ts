@@ -6,7 +6,7 @@ export interface Iusers {
     password: string;
     phone: string;
     address: string;
-    role: 'admin' | 'vendor' | 'customer';
+    role: 'admin' | 'vendor' | 'customer' | 'manager';
     isActive?: boolean;
     isDelete?: boolean;
     createdAt?: Date;
