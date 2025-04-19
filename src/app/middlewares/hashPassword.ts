@@ -4,8 +4,12 @@ import AppError from "../errors/AppError";
 import status from "http-status";
 import bcrypt from "bcryptjs";
 
-const hashPassword = (req: Request, res: Response, next: NextFunction) => {
-  catchAsync(async () => {
+const hashPassword = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
     const { password } = req.body;
     if (!password) {
       throw new AppError(status.BAD_REQUEST, "Password is required");
@@ -15,11 +19,12 @@ const hashPassword = (req: Request, res: Response, next: NextFunction) => {
       password,
       Number(process.env.HASHING_SALT)
     );
-
     //    replace original password with hashed password
     req.body.password = hashedPassword;
     next();
-  });
+  } catch (error) {
+    next(error);
+  }
 };
 
 export default hashPassword;
