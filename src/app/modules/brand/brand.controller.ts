@@ -6,7 +6,7 @@ import { Request, Response } from "express";
     
     const postBrand = catchAsync(async (req: Request, res: Response) => {
       const result = await brandService.postBrandIntoDB(req.body);
-      sendResponse(res, { statusCode: status.CREATED, success: true, message: "Created successfully", data: result });
+      sendResponse(res, { statusCode: status.CREATED, success: true, message: "Brand created successfully", data: result });
     });
     
     const getAllBrand = catchAsync(async (req: Request, res: Response) => {
