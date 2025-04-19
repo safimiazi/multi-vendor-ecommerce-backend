@@ -6,7 +6,7 @@ import { authLoginValidation, authRegisterValidation } from "./auth.validation";
 
     const router = express.Router();
     
-    router.post("/register", validateRequest(authRegisterValidation), authController.postAuth);
-    router.post("/login", validateRequest(authLoginValidation), authController.postAuth);
+    router.post("/register", validateRequest(authRegisterValidation), authController.Register);
+    router.post("/login", validateRequest(authLoginValidation), authController.Login);
 
     export const authRoutes = router;
