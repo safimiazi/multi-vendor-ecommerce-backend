@@ -51,15 +51,20 @@ const Login = catchAsync(async (req: Request, res: Response, next: NextFunction)
       process.env.JWT_SECRET as string,
       process.env.JWT_EXPIRES_IN as string
     );
-
-
-  const result = "";
-  sendResponse(res, {
-    statusCode: status.CREATED,
-    success: true,
-    message: "Login successfully",
-    data: result,
-  });
+ // 4. Send response
+ sendResponse(res, {
+  statusCode: status.OK,
+  success: true,
+  message: "Login successful",
+  data: {
+    token,
+    user: {
+      name: user.name,
+      email: user.email,
+      role: user.role,
+    },
+  },
+});
 });
 
 export const authController = { Register, Login };
