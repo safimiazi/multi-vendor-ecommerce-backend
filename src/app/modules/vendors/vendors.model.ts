@@ -8,6 +8,10 @@ const vendorsSchema = new mongoose.Schema<Ivendors>(
       ref: "users",
       required: true,
     },
+    logo: {
+      type: String,
+      required: true,
+    },
     shopName: {
       type: String,
       required: true,

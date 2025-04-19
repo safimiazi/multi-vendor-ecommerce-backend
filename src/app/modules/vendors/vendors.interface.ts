@@ -3,6 +3,7 @@ import { Types } from "mongoose";
 export interface Ivendors {
     user: Types.ObjectId; // Reference to Users
     shopName: string;
+    logo: string;
     shopAddress: string;
     shopPhone: string;
     shopEmail: string;
