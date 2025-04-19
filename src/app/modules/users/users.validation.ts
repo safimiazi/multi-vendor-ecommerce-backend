@@ -1,9 +1,13 @@
 import { z } from 'zod';
     
     export const usersPostValidation = z.object({
-      // Example field (you can adjust based on your model)
-      name: z.string().min(1, { message: "Name is required" }),
-      // Add other fields based on your model's needs
+     name: z.string().optional(),
+     email: z.string().email(),
+     password: z.string().min(6),
+     phone: z.string().optional(),
+      address: z.string().optional(),
+      role: z.enum(['admin', 'vendor', 'customer']).default('customer'),
+      isDelete: z.boolean().optional(),
     });
     
     
