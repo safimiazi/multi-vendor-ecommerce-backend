@@ -1,10 +1,54 @@
 import mongoose from "mongoose";
-    
-    const vendorsSchema = new mongoose.Schema({
-    
-     isDelete: {
-            type: Boolean,
-            default: false,
-        }}, { timestamps: true });
-    
-    export const vendorsModel = mongoose.model("vendors", vendorsSchema);
+import { Ivendors } from "./vendors.interface";
+
+const vendorsSchema = new mongoose.Schema<Ivendors>(
+  {
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "users",
+      required: true,
+    },
+    shopName: {
+      type: String,
+      required: true,
+    },
+    shopAddress: {
+      type: String,
+      required: true,
+    },
+    shopPhone: {
+      type: String,
+      required: true,
+    },
+    shopEmail: {
+      type: String,
+      required: true,
+    },
+    description: {
+      type: String,
+      required: true,
+    },
+    isVarified: {
+      type: Boolean,
+      default: false,
+    },
+    reating: {
+      type: Number,
+      default: 0,
+    },
+
+    // soft delete
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
+
+    isDelete: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  { timestamps: true }
+);
+
+export const vendorsModel = mongoose.model<Ivendors>("vendors", vendorsSchema);
