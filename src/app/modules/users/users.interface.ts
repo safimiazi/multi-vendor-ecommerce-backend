@@ -6,6 +6,7 @@ export interface Iusers {
     phone: string;
     address: string;
     role: 'admin' | 'vendor' | 'customer';
+    isActive?: boolean;
     isDelete?: boolean;
     createdAt?: Date;
     updatedAt?: Date;

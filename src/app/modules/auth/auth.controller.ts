@@ -49,8 +49,20 @@ const Login = catchAsync(async (req: Request, res: Response, next: NextFunction)
     const token = generateToken(
       { userId: user._id, role: user.role },
       process.env.JWT_SECRET as string,
-      process.env.JWT_EXPIRES_IN as string
+      process.env.JWT_EXPIRES_IN as unknown as number
     );
+
+// 3. Set token in cookie:
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      maxAge: Number(process.env.JWT_EXPIRES_IN) * 1000 || 24 * 60 * 60 * 1000, // 1 day
+    });
+
+
+
+
  // 4. Send response
  sendResponse(res, {
   statusCode: status.OK,

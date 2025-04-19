@@ -28,6 +28,10 @@ const usersSchema = new mongoose.Schema<Iusers>(
     },
 
     // soft delete
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
 
     isDelete: {
       type: Boolean,
