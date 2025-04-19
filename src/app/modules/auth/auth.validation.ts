@@ -1,11 +1,19 @@
 import { z } from 'zod';
     
-    export const authPostValidation = z.object({
-      // Example field (you can adjust based on your model)
-      name: z.string().min(1, { message: "Name is required" }),
-      // Add other fields based on your model's needs
+    export const authRegisterValidation = z.object({
+      name: z.string(),
+      email: z.string().email(),
+      password: z.string().min(6),
+      phone: z.string().optional(),
+      address: z.string().optional(),
+      role: z.enum(['vendor', 'customer']).default('customer'),
+       
+    });
+    export const authLoginValidation = z.object({
+      email: z.string().email(),
+      password: z.string().min(6),
+       
     });
     
     
-    export const authUpdateValidation = authPostValidation.partial();
     
