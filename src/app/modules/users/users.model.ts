@@ -1,10 +1,40 @@
 import mongoose from "mongoose";
-    
-    const usersSchema = new mongoose.Schema({
-    
-     isDelete: {
-            type: Boolean,
-            default: false,
-        }}, { timestamps: true });
-    
-    export const usersModel = mongoose.model("users", usersSchema);
+import { Iusers } from "./users.interface";
+
+const usersSchema = new mongoose.Schema<Iusers>(
+  {
+    name: {
+      type: String,
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    password: {
+      type: String,
+      require: true,
+    },
+    phone: {
+      type: String,
+    },
+    address: {
+      type: String,
+    },
+    role: {
+      type: String,
+      enum: ["admin", "vendor", "customer"],
+      default: "customer",
+    },
+
+    // soft delete
+
+    isDelete: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  { timestamps: true }
+);
+
+export const usersModel = mongoose.model<Iusers>("users", usersSchema);
