@@ -6,7 +6,8 @@
 
     const router = express.Router();
     
-    router.post("/post_auth", validateRequest(authPostValidation), authController.postAuth);
+    router.post("/register", validateRequest(authPostValidation), authController.postAuth);
+    router.post("/login", validateRequest(authPostValidation), authController.postAuth);
     router.get("/get_all_auth", authController.getAllAuth);
     router.get("/get_single_auth/:id", authController.getSingleAuth);
     router.put("/update_auth/:id", validateRequest(authUpdateValidation), authController.updateAuth);
