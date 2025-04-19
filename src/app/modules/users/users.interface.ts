@@ -1,6 +1,7 @@
 export interface Iusers {
     _id?: string;
     name: string;
+    image?: string;
     email: string;
     password: string;
     phone: string;
