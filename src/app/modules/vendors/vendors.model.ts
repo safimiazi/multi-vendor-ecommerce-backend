@@ -10,7 +10,6 @@ const vendorsSchema = new mongoose.Schema<Ivendors>(
     },
     logo: {
       type: String,
-      required: true,
     },
     shopName: {
       type: String,
@@ -18,11 +17,9 @@ const vendorsSchema = new mongoose.Schema<Ivendors>(
     },
     shopAddress: {
       type: String,
-      required: true,
     },
     shopPhone: {
       type: String,
-      required: true,
     },
     shopEmail: {
       type: String,
@@ -30,7 +27,6 @@ const vendorsSchema = new mongoose.Schema<Ivendors>(
     },
     description: {
       type: String,
-      required: true,
     },
     isVarified: {
       type: Boolean,
@@ -44,8 +40,7 @@ const vendorsSchema = new mongoose.Schema<Ivendors>(
     // soft delete
     isActive: {
       type: Boolean,
-      default: true,
-    },
+      default: true,},
 
     isDelete: {
       type: Boolean,
