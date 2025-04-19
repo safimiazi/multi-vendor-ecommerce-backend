@@ -1,7 +1,7 @@
 export interface Ibrand {
     brandName: string;
     brandImage: string;
-    brandDescription: string;
+    brandDescription?: string;
     isActive?: boolean;
     isDelete?: boolean;
     createdAt?: Date;

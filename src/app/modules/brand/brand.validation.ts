@@ -1,9 +1,13 @@
 import { z } from 'zod';
     
     export const brandPostValidation = z.object({
-      // Example field (you can adjust based on your model)
-      name: z.string().min(1, { message: "Name is required" }),
-      // Add other fields based on your model's needs
+    
+      brandName: z.string().min(1, { message: "Brand name is required" }),
+      brandImage: z.string(),
+      brandDescription: z.string().optional(),
+      isActive: z.boolean().optional(),
+      isDelete: z.boolean().optional(),
+      
     });
     
     
