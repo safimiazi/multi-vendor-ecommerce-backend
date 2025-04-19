@@ -1,4 +1,5 @@
 export interface Iusers {
+    _id?: string;
     name: string;
     email: string;
     password: string;
@@ -8,5 +9,5 @@ export interface Iusers {
     isDelete?: boolean;
     createdAt?: Date;
     updatedAt?: Date;
-    
+
 }

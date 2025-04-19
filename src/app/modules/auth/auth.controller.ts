@@ -6,6 +6,7 @@ import { usersModel } from "../users/users.model";
 import { Iusers } from "../users/users.interface";
 import AppError from "../../errors/AppError";
 import comparePassword from "../../utils/comparePassword";
+import generateToken from "../../utils/generateToken";
 
 const Register = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
   // check if user already exists:
@@ -39,10 +40,19 @@ const Login = catchAsync(async (req: Request, res: Response, next: NextFunction)
     // compare password:
     const isMatch = await comparePassword(req.body.password, user.password);
 
-    
+
     if (!isMatch) {
       throw new AppError(status.UNAUTHORIZED, "Password is incorrect");
     }
+
+    // generate token:
+    const token = generateToken(
+      { userId: user._id, role: user.role },
+      process.env.JWT_SECRET as string,
+      process.env.JWT_EXPIRES_IN as string
+    );
+
+
   const result = "";
   sendResponse(res, {
     statusCode: status.CREATED,
