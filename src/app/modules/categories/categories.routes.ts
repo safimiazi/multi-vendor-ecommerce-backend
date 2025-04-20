@@ -24,10 +24,10 @@ router.post(
     upload_file_destination_path: "uploads",
     regex: /\.(jpg|jpeg|png|webp)$/,
     images: "jpg, jpeg, png, webp",
-  }).fields([{ name: "brandImage", maxCount: 1 }]),
+  }).fields([{ name: "image", maxCount: 1 }]),
 
   configurableCompression("jpeg", 60),
-  processImage({ fieldName: "brandImage" }),
+  processImage({ fieldName: "image" }),
   validateRequest(categoriesPostValidation),
   categoriesController.postCategories
 );
