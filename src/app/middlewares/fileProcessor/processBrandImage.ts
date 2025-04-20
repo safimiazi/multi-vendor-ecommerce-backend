@@ -17,7 +17,7 @@ export const processBrandImage = (
       brandImage:
         files && files.brandImage && files.brandImage.length > 0
           ? files.brandImage[0].path
-          : "",
+          : null,
 
   
     };

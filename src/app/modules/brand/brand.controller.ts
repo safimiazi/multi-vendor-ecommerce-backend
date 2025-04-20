@@ -3,6 +3,7 @@ import { brandService } from "./brand.service";
 import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
 import status from "http-status";
+import { brandModel } from "./brand.model";
 
 const postBrand = catchAsync(async (req: Request, res: Response) => {
   const result = await brandService.postBrandIntoDB(req.body);
@@ -35,8 +36,20 @@ const getSingleBrand = catchAsync(async (req: Request, res: Response) => {
 });
 
 const updateBrand = catchAsync(async (req: Request, res: Response) => {
-  console.log(req.body);
-  return
+  const {id} = req.params;
+  const brand   = await brandModel.findById(id);
+  if (!brand) {
+    throw new Error("Brand not found");
+  }
+  if (brand.isDelete) {
+   throw new Error("Brand is already deleted");
+  }
+  if(!brand.isActive) {
+    throw new Error("Brand is not active");
+  }
+  
+
+
   const result = await brandService.updateBrandIntoDB(req.body);
   sendResponse(res, {
     statusCode: status.OK,
