@@ -7,7 +7,7 @@ import { z } from 'zod';
       description: z.string().optional(),
       isActive: z.boolean().optional(),
       isDelete: z.boolean().optional(),
-      parentCategory: z.string().nullable(),
+      parentCategory: z.string().nullable().optional(),
     });
     
     

@@ -21,7 +21,8 @@ const categoriesSchema = new mongoose.Schema<Icategories>(
     isActive: {
       type: Boolean,
       default: true,
-    },parentCategory: {
+    },
+    parentCategory: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "categories",
         default: null,

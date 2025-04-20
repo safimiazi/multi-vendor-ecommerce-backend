@@ -5,8 +5,7 @@ import sendResponse from "../../utils/sendResponse";
 import status from "http-status";
 
 const postCategories = catchAsync(async (req: Request, res: Response) => {
-  console.log("req.body", req.body);
-  return;
+
   const result = await categoriesService.postCategoriesIntoDB(req.body);
   sendResponse(res, {
     statusCode: status.CREATED,
