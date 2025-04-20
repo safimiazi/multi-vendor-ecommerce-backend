@@ -5,11 +5,29 @@ import {
   categoriesPostValidation,
   categoriesUpdateValidation,
 } from "./categories.validation";
+import { authenticate, authorize } from "../../middlewares/authGuard";
+import { ROLE } from "../../constant/role";
+import { getMuler } from "../../middlewares/multer";
+import { photoComposure } from "../../middlewares/photoComposure";
+import { processImage } from "../../middlewares/processImage";
+import { handleImageUpdate } from "../../middlewares/handleImageUpdate";
+import { categoriesModel } from "./categories.model";
 
 const router = express.Router();
+const { configurableCompression } = photoComposure();
 
 router.post(
   "/post_category",
+  authenticate,
+  authorize(ROLE.ADMIN),
+  getMuler({
+    upload_file_destination_path: "uploads",
+    regex: /\.(jpg|jpeg|png|webp)$/,
+    images: "jpg, jpeg, png, webp",
+  }).fields([{ name: "brandImage", maxCount: 1 }]),
+
+  configurableCompression("jpeg", 60),
+  processImage({ fieldName: "brandImage" }),
   validateRequest(categoriesPostValidation),
   categoriesController.postCategories
 );
@@ -20,6 +38,20 @@ router.get(
 );
 router.put(
   "/update_category/:id",
+  authenticate,
+  authorize(ROLE.ADMIN, ROLE.VENDOR),
+  getMuler({
+    upload_file_destination_path: "uploads",
+    regex: /\.(jpg|jpeg|png|webp)$/,
+    images: "jpg, jpeg, png, webp",
+  }).fields([{ name: "image", maxCount: 1 }]),
+  configurableCompression("jpeg", 60),
+  processImage({ fieldName: "image" }),
+  handleImageUpdate({
+    model: categoriesModel,
+    imageField: "image",
+    folderPath: "uploads",
+  }),
   validateRequest(categoriesUpdateValidation),
   categoriesController.updateCategories
 );
