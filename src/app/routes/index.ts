@@ -9,6 +9,9 @@ import { adminRoutes } from "../modules/admin/admin.routes";
 import { managerRoutes } from "../modules/manager/manager.routes";
 import { customerRoutes } from "../modules/customer/customer.routes";
 import { brandRoutes } from "../modules/brand/brand.routes";
+import path from "path";
+import { attributeRoutes } from "../modules/attribute/attribute.routes";
+import { attributeOptionRoutes } from "../modules/attributeOption/attributeOption.routes";
 
 const router = Router();
 
@@ -36,6 +39,14 @@ const moduleRoutes = [
     {
         path: "/brands",
         route: brandRoutes
+    },
+    {
+        path: "atributes",
+        route: attributeRoutes
+    },
+    {
+        path: "atributeOptions",
+        route: attributeOptionRoutes
     },
     {
         path: "/products",
