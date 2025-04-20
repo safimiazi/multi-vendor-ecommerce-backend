@@ -42,7 +42,6 @@ router.put(
   }).fields([
     { name: "brandImage", maxCount: 1 }, 
   ]),
-
   configurableCompression("jpeg", 60),
   processBrandImage,
   validateRequest(brandUpdateValidation),
