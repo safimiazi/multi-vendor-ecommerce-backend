@@ -7,6 +7,8 @@ import { ROLE } from "../../constant/role";
 import { photoComposure } from "../../middlewares/photoComposure";
 import { processBrandImage } from "../../middlewares/fileProcessor/processBrandImage";
 import { getMuler } from "../../middlewares/multer";
+import { handleImageUpdate } from "../../middlewares/handleImageUpdate";
+import { brandModel } from "./brand.model";
 
 const router = express.Router();
 const { configurableCompression } = photoComposure();
@@ -44,6 +46,11 @@ router.put(
   ]),
   configurableCompression("jpeg", 60),
   processBrandImage,
+  handleImageUpdate({
+    model: brandModel,
+    imageField: "brandImage",
+    folderPath: "uploads",
+  }),
   validateRequest(brandUpdateValidation),
   brandController.updateBrand
 );

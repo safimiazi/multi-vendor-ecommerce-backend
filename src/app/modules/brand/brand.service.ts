@@ -83,14 +83,14 @@ export const brandService = {
       }
     }
   },
-  async updateBrandIntoDB(data: any) {
+  async updateBrandIntoDB(data: any , id: string) {
     try {
-      const isDeleted = await brandModel.findOne({ _id: data.id });
+      const isDeleted = await brandModel.findOne({ _id: id });
       if (isDeleted?.isDelete) {
         throw new AppError(status.NOT_FOUND, "brand is already deleted");
       }
 
-      const result = await brandModel.updateOne({ _id: data.id }, data, {
+      const result = await brandModel.updateOne({ _id: id }, data, {
         new: true,
       });
       if (!result) {

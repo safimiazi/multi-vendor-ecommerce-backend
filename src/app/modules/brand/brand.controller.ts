@@ -50,28 +50,9 @@ const updateBrand = catchAsync(async (req: Request, res: Response) => {
     throw new Error("Brand is not active");
   }
 
-  if (req.body.brandImage) {
-    const existingBrandImagePath = path.join(
-      __dirname,
-      "../../..",
-      brand.brandImage as string
-    );
-    console.log(existingBrandImagePath);
-    if (fs.existsSync(existingBrandImagePath)) {
-      if (brand.brandImage && brand.brandImage !== req.body.brandImage) {
-        fs.unlink(existingBrandImagePath, (err: any) => {
-          if (err) {
-            throw new Error("Error deleting file");
-          }
-        });
-      }
-      req.body.brandImage = req.body.brandImage.replace(/\\/g, "/");
-    } else {
-      throw new Error("File does not exist");
-    }
-  }
 
-  const result = await brandService.updateBrandIntoDB(req.body);
+
+  const result = await brandService.updateBrandIntoDB(req.body, id);
   sendResponse(res, {
     statusCode: status.OK,
     success: true,
