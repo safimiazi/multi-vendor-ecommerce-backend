@@ -1,11 +1,14 @@
-import { z } from 'zod';
-    
-    export const attributeOptionPostValidation = z.object({
-      // Example field (you can adjust based on your model)
-      name: z.string().min(1, { message: "Name is required" }),
-      // Add other fields based on your model's needs
-    });
-    
-    
-    export const attributeOptionUpdateValidation = attributeOptionPostValidation.partial();
-    
+import { z } from "zod";
+
+export const attributeOptionPostValidation = z.object({
+  name: z.string().trim().min(1, "Name is required"),
+  image: z.string().url("Image must be a valid URL").nullable().optional(),
+  description: z.string().optional(),
+  value: z.string().trim().optional(), // optional since not required in Mongoose
+  slug: z.string().trim().optional(),
+  isActive: z.boolean().optional().default(true),
+  isDelete: z.boolean().optional().default(false),
+});
+
+export const attributeOptionUpdateValidation =
+  attributeOptionPostValidation.partial();
