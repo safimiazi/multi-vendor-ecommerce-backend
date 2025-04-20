@@ -33,6 +33,18 @@ router.get("/get_all_brand", brandController.getAllBrand);
 router.get("/get_single_brand/:id", brandController.getSingleBrand);
 router.put(
   "/update_brand/:id",
+  authenticate,
+  authorize(ROLE.ADMIN, ROLE.VENDOR),
+  getMuler({
+    upload_file_destination_path: "uploads",
+    regex: /\.(jpg|jpeg|png|webp)$/,
+    images: "jpg, jpeg, png, webp",
+  }).fields([
+    { name: "brandImage", maxCount: 1 }, 
+  ]),
+
+  configurableCompression("jpeg", 60),
+  processBrandImage,
   validateRequest(brandUpdateValidation),
   brandController.updateBrand
 );

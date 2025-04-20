@@ -62,7 +62,19 @@ export const brandService = {
   },
   async getSingleBrandFromDB(id: string) {
     try {
-      return await brandModel.findById(id);
+      let result : any =  await brandModel.findById(id);
+      if (!result) {
+        throw new AppError(status.NOT_FOUND, "Brand not found");
+      }
+
+      result = {
+        ...result.toObject(),
+        brandImage: result.brandImage
+          ? `${process.env.BASE_URL}/${result.brandImage?.replace(/\\/g, "/")}`
+          : null,
+      }
+
+      return result;
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new Error(`${error.message}`);
