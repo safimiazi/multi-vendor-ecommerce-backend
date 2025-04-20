@@ -39,18 +39,6 @@ const getSingleBrand = catchAsync(async (req: Request, res: Response) => {
 
 const updateBrand = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;
-  const brand = await brandModel.findById(id);
-  if (!brand) {
-    throw new Error("Brand not found");
-  }
-  if (brand.isDelete) {
-    throw new Error("Brand is already deleted");
-  }
-  if (!brand.isActive) {
-    throw new Error("Brand is not active");
-  }
-
-
 
   const result = await brandService.updateBrandIntoDB(req.body, id);
   sendResponse(res, {

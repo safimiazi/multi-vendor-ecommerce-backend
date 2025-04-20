@@ -38,7 +38,8 @@ const getSingleCategories = catchAsync(async (req: Request, res: Response) => {
 });
 
 const updateCategories = catchAsync(async (req: Request, res: Response) => {
-  const result = await categoriesService.updateCategoriesIntoDB(req.body);
+  const { id } = req.params;
+  const result = await categoriesService.updateCategoriesIntoDB(req.body, id);
   sendResponse(res, {
     statusCode: status.OK,
     success: true,

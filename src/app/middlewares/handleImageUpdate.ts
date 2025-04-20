@@ -17,9 +17,15 @@ export const handleImageUpdate = ({
     try {
       const { id } = req.params;
       const document = await model.findById(id);
-
       if (!document) {
         throw new Error("Document not found");
+      }
+
+      if (!document.isActive) {
+        throw new Error("Document is not active");
+      }
+      if (document.isDelete) {
+        throw new Error("Document is deleted");
       }
 
       const newImage = req.body[imageField];
@@ -28,12 +34,20 @@ export const handleImageUpdate = ({
       // If there's a new image
       if (newImage) {
         const newImageName = path.basename(newImage);
-        const newImagePath = path.join(__dirname, `../../../${folderPath}`, newImageName);
+        const newImagePath = path.join(
+          __dirname,
+          `../../../${folderPath}`,
+          newImageName
+        );
 
         // Check if old image exists and is different
         if (oldImage && oldImage !== newImage) {
           const oldImageName = path.basename(oldImage);
-          const oldImagePath = path.join(__dirname, `../../../${folderPath}`, oldImageName);
+          const oldImagePath = path.join(
+            __dirname,
+            `../../../${folderPath}`,
+            oldImageName
+          );
 
           if (fs.existsSync(oldImagePath)) {
             fs.unlinkSync(oldImagePath); // Delete old image
@@ -50,7 +64,6 @@ export const handleImageUpdate = ({
         if (!fs.existsSync(newImagePath)) {
           req.body[imageField] = null;
         }
-
       } else {
         // No new image provided — optionally clean up old image?
         req.body[imageField] = oldImage || null;

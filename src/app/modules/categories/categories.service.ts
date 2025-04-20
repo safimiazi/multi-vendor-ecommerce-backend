@@ -7,7 +7,14 @@ import AppError from "../../errors/AppError";
 export const categoriesService = {
   async postCategoriesIntoDB(data: any) {
     try {
-      return await categoriesModel.create(data);
+      let result: any = await categoriesModel.create(data);
+      result = {
+        ...result.toObject(),
+        image: result.image
+          ? `${process.env.BASE_URL}/${result.image?.replace(/\\/g, "/")}`
+          : null,
+      };
+      return result;
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new Error(`${error.message}`);
@@ -25,7 +32,28 @@ export const categoriesService = {
         .paginate()
         .fields();
 
-      const result = await service_query.modelQuery;
+      let result = await service_query.modelQuery.populate("parentCategory");
+
+      result = result.map((item: any) => {
+        const data = item.toObject();
+        return {
+          ...data,
+          parentCategory: item.parentCategory
+            ? {
+                ...item.parentCategory.toObject(),
+                image: item.parentCategory.image
+                  ? `${
+                      process.env.BASE_URL
+                    }/${item.parentCategory.image.replace(/\\/g, "/")}`
+                  : null,
+              }
+            : null,
+          image: data.image
+            ? `${process.env.BASE_URL}/${data.image.replace(/\\/g, "/")}`
+            : null,
+        };
+      });
+
       const meta = await service_query.countTotal();
       return {
         result,
@@ -50,14 +78,9 @@ export const categoriesService = {
       }
     }
   },
-  async updateCategoriesIntoDB(data: any) {
+  async updateCategoriesIntoDB(data: any, id: string) {
     try {
-      const isDeleted = await categoriesModel.findOne({ _id: data.id });
-      if (isDeleted?.isDelete) {
-        throw new AppError(status.NOT_FOUND, "categories is already deleted");
-      }
-
-      const result = await categoriesModel.updateOne({ _id: data.id }, data, {
+      const result = await categoriesModel.updateOne({ _id: id }, data, {
         new: true,
       });
       if (!result) {
@@ -79,6 +102,24 @@ export const categoriesService = {
 
       if (!isExist) {
         throw new AppError(status.NOT_FOUND, "categories not found");
+      }
+      // Step 2: Check if the categories is already deleted
+      if (isExist.isDelete) {
+        throw new AppError(status.NOT_FOUND, "categories already deleted");
+      }
+      // Step 3: Check if the categories is already inactive
+      if (!isExist.isActive) {
+        throw new AppError(status.NOT_FOUND, "categories already inactive");
+      }
+      // Step 4: Check if the categories has any child categories
+      const hasChildCategories = await categoriesModel.findOne({
+        parentCategory: id,
+      });
+      if (hasChildCategories) {
+        throw new AppError(
+          status.NOT_FOUND,
+          "categories has child categories. Please delete them first."
+        );
       }
 
       // Step 4: Delete the home categories from the database

@@ -7,13 +7,13 @@ import AppError from "../../errors/AppError";
 export const brandService = {
   async postBrandIntoDB(data: any) {
     try {
-      let result : any =  await brandModel.create(data);
+      let result: any = await brandModel.create(data);
       result = {
         ...result.toObject(),
         brandImage: result.brandImage
           ? `${process.env.BASE_URL}/${result.brandImage?.replace(/\\/g, "/")}`
           : null,
-      }
+      };
       return result;
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -62,7 +62,7 @@ export const brandService = {
   },
   async getSingleBrandFromDB(id: string) {
     try {
-      let result : any =  await brandModel.findById(id);
+      let result: any = await brandModel.findById(id);
       if (!result) {
         throw new AppError(status.NOT_FOUND, "Brand not found");
       }
@@ -72,7 +72,7 @@ export const brandService = {
         brandImage: result.brandImage
           ? `${process.env.BASE_URL}/${result.brandImage?.replace(/\\/g, "/")}`
           : null,
-      }
+      };
 
       return result;
     } catch (error: unknown) {
@@ -83,13 +83,8 @@ export const brandService = {
       }
     }
   },
-  async updateBrandIntoDB(data: any , id: string) {
+  async updateBrandIntoDB(data: any, id: string) {
     try {
-      const isDeleted = await brandModel.findOne({ _id: id });
-      if (isDeleted?.isDelete) {
-        throw new AppError(status.NOT_FOUND, "brand is already deleted");
-      }
-
       const result = await brandModel.updateOne({ _id: id }, data, {
         new: true,
       });
@@ -115,7 +110,10 @@ export const brandService = {
       }
 
       // Step 4: Delete the home brand from the database
-    const result =   await brandModel.updateOne({ _id: id }, { isDelete: true });
+      const result = await brandModel.updateOne(
+        { _id: id },
+        { isDelete: true }
+      );
       return result;
     } catch (error: unknown) {
       if (error instanceof Error) {
