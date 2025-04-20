@@ -69,7 +69,28 @@ export const categoriesService = {
   },
   async getSingleCategoriesFromDB(id: string) {
     try {
-      return await categoriesModel.findById(id);
+      let result: any = await categoriesModel.findById(id);
+
+      if (!result) {
+        throw new AppError(status.NOT_FOUND, "categories not found");
+      }
+      result = {
+        ...result.toObject(),
+        image: result.image
+          ? `${process.env.BASE_URL}/${result.image?.replace(/\\/g, "/")}`
+          : null,
+        parentCategory: result.parentCategory
+          ? {
+              ...result.parentCategory.toObject(),
+              image: result.parentCategory.image
+                ? `${
+                    process.env.BASE_URL
+                  }/${result.parentCategory.image.replace(/\\/g, "/")}`
+                : null,
+            }
+          : null,
+      };
+      return result;
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new Error(`${error.message}`);
@@ -95,6 +116,7 @@ export const categoriesService = {
       }
     }
   },
+
   async deleteCategoriesFromDB(id: string) {
     try {
       // Step 1: Check if the categories exists in the database

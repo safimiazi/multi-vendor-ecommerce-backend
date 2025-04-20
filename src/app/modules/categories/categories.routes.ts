@@ -39,7 +39,7 @@ router.get(
 router.put(
   "/update_category/:id",
   authenticate,
-  authorize(ROLE.ADMIN, ROLE.VENDOR),
+  authorize(ROLE.ADMIN),
   getMuler({
     upload_file_destination_path: "uploads",
     regex: /\.(jpg|jpeg|png|webp)$/,
@@ -55,6 +55,11 @@ router.put(
   validateRequest(categoriesUpdateValidation),
   categoriesController.updateCategories
 );
-router.delete("/delete_category/:id", categoriesController.deleteCategories);
+router.delete(
+  "/delete_category/:id",
+  authenticate,
+  authorize(ROLE.ADMIN),
+  categoriesController.deleteCategories
+);
 
 export const categoriesRoutes = router;
