@@ -115,8 +115,8 @@ export const brandService = {
       }
 
       // Step 4: Delete the home brand from the database
-      await brandModel.updateOne({ _id: id }, { isDelete: true });
-      return;
+    const result =   await brandModel.updateOne({ _id: id }, { isDelete: true });
+      return result;
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new Error(`${error.message}`);
