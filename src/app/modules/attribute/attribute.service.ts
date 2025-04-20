@@ -73,7 +73,7 @@ export const attributeService = {
         throw new AppError(status.NOT_FOUND, "attribute not found");
       }
       result.attributeOption = (result.attributeOption ?? []).map((option: any) => ({
-        ...option.toObject(),
+        ...option.toObject(),  
         image: option.image
           ? `${process.env.BASE_URL}/${option.image?.replace(/\\/g, "/")}`
           : null,
