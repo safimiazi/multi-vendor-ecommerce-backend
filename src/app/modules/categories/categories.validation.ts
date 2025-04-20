@@ -1,9 +1,13 @@
 import { z } from 'zod';
     
     export const categoriesPostValidation = z.object({
-      // Example field (you can adjust based on your model)
-      name: z.string().min(1, { message: "Name is required" }),
-      // Add other fields based on your model's needs
+      name: z.string().min(1, { message: "Category name is required" }),
+      slug: z.string().optional(),
+      image: z.string().nullable(),
+      description: z.string().optional(),
+      isActive: z.boolean().optional(),
+      isDelete: z.boolean().optional(),
+      parentCategory: z.string().nullable(),
     });
     
     
