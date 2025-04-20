@@ -29,7 +29,20 @@ export const attributeService = {
         .paginate()
         .fields();
 
-      const result = await service_query.modelQuery.populate("attributeOption");
+      let result = await service_query.modelQuery.populate("attributeOption");
+
+      result = result.map((item: any) => {
+        const attributeData = item.toObject();
+        return {
+          ...attributeData,
+          attributeOption: attributeData.attributeOption.map((option: any) => ({
+            ...option.toObject(),
+            image: option.image
+              ? `${process.env.BASE_URL}/${option.image?.replace(/\\/g, "/")}`
+              : null,
+          })),
+        };
+      });
       const meta = await service_query.countTotal();
       return {
         result,
@@ -59,6 +72,12 @@ export const attributeService = {
       if (!result) {
         throw new AppError(status.NOT_FOUND, "attribute not found");
       }
+      result.attributeOption = (result.attributeOption ?? []).map((option: any) => ({
+        ...option.toObject(),
+        image: option.image
+          ? `${process.env.BASE_URL}/${option.image?.replace(/\\/g, "/")}`
+          : null,
+      }));
 
       return result;
     } catch (error: unknown) {
