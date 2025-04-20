@@ -1,6 +1,6 @@
 export interface Ibrand {
     brandName: string;
-    brandImage: string;
+    brandImage: string | null;
     brandDescription?: string;
     isActive?: boolean;
     isDelete?: boolean;

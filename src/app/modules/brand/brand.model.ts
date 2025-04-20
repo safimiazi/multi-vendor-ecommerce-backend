@@ -8,7 +8,7 @@ const brandSchema = new mongoose.Schema<Ibrand>(
       required: true,
     },
     brandImage: {
-      type: String,
+      type: String ,
       required: true,
     },
     brandDescription: {

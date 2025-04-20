@@ -7,7 +7,14 @@ import AppError from "../../errors/AppError";
 export const brandService = {
   async postBrandIntoDB(data: any) {
     try {
-      return await brandModel.create(data);
+      let result : any =  await brandModel.create(data);
+      result = {
+        ...result.toObject(),
+        brandImage: result.brandImage
+          ? `${process.env.BASE_URL}/${result.brandImage?.replace(/\\/g, "/")}`
+          : null,
+      }
+      return result;
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new Error(`${error.message}`);
@@ -25,7 +32,21 @@ export const brandService = {
         .paginate()
         .fields();
 
-      const result = await service_query.modelQuery;
+      let result = await service_query.modelQuery;
+
+      result = result.map((item: any) => {
+        const brandData = item.toObject();
+        return {
+          ...brandData,
+          brandImage: brandData.brandImage
+            ? `${process.env.BASE_URL}/${brandData.brandImage?.replace(
+                /\\/g,
+                "/"
+              )}`
+            : null,
+        };
+      });
+
       const meta = await service_query.countTotal();
       return {
         result,

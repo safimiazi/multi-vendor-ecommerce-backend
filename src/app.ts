@@ -7,6 +7,8 @@ import globalErrorHandler from "./app/middlewares/globalErrorHandler";
 import router from "./app/routes";
 import { usersModel } from "./app/modules/users/users.model";
 import bcrypt from "bcryptjs";
+import path from "path";
+import fs from "fs";
 const app: Application = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -25,6 +27,14 @@ const corsOptions = {
       : "*",
 };
 app.use(cors(corsOptions));
+
+// Set up static file serving for uploads
+const uploadsPath = path.resolve("uploads");
+
+if (!fs.existsSync(uploadsPath)) {
+  fs.mkdirSync(uploadsPath)}
+
+app.use("/uploads", express.static(uploadsPath));
 
 //  test route:
 app.get("/", (req, res) => {
