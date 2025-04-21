@@ -2,17 +2,18 @@ import { z } from 'zod';
     
     export const vendorsPostValidation = z.object({
       
-      user: z.string().optional(),
-      shopName: z.string().optional(),
-      logo: z.string().optional(),
-      shopAddress: z.string().optional(),
-      shopPhone: z.string().optional(),
+      name: z.string(),
+      email: z.string(),
+      password : z.string(),
+      phone: z.string(),
+      address: z.string(),
+      shopName: z.string(),
       shopEmail: z.string().email().optional(),
+      shopPhone: z.string().optional(),
+      shopAddress: z.string().optional(),
       description: z.string().optional(),
-      isVarified: z.boolean().optional(),
-      isDelete: z.boolean().optional(),
-      isActive: z.boolean().optional(),
-      reating: z.number().optional(),
+      logo: z.string().optional(),
+      
    
     });
     

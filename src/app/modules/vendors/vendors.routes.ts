@@ -5,12 +5,28 @@ import {
   vendorsPostValidation,
   vendorsUpdateValidation,
 } from "./vendors.validation";
+import hashPassword from "../../middlewares/hashPassword";
+import { getMuler } from "../../middlewares/multer";
+import { processImage } from "../../middlewares/processImage";
+import { photoComposure } from "../../middlewares/photoComposure";
 
 const router = express.Router();
+const { configurableCompression } = photoComposure();
 
 router.post(
-  "/post_vendors",
+  "/vendor_request",
+    getMuler({
+      upload_file_destination_path: "uploads",
+      regex: /\.(jpg|jpeg|png|webp)$/,
+      images: "jpg, jpeg, png, webp",
+    }).fields([
+      { name: "logo", maxCount: 1 }, 
+    ]),
+  
+    configurableCompression("jpeg", 60),
+    processImage({ fieldName: "logo" }),
   validateRequest(vendorsPostValidation),
+  hashPassword,
   vendorsController.postVendors
 );
 router.get("/get_all_vendors", vendorsController.getAllVendors);

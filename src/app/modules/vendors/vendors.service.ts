@@ -3,11 +3,81 @@ import { VENDORS_SEARCHABLE_FIELDS } from "./vendors.constant";
 import QueryBuilder from "../../builder/QueryBuilder";
 import status from "http-status";
 import AppError from "../../errors/AppError";
+import mongoose from "mongoose";
+import { usersModel } from "../users/users.model";
 
 export const vendorsService = {
-  async postVendorsIntoDB(data: any) {
+  async postVendorsIntoDB(payload: any) {
+    const session = await mongoose.startSession();
+    session.startTransaction();
+
     try {
-      return await vendorsModel.create(data);
+      let user: any = await usersModel
+        .findOne({
+          $or: [
+            { email: payload.email },
+            {
+              phone: payload.phone,
+            },
+          ],
+        })
+        .session(session);
+
+      // If user doesn't exist, create one
+      if (!user) {
+        user = await usersModel
+          .create(
+            [
+              {
+                name: payload.name,
+                email: payload.email,
+                password: payload.password,
+                phone: payload.phone,
+                address: payload.address,
+                role: "vendor",
+              },
+            ],
+            { session }
+          )
+          .then((res) => res[0]);
+      }
+
+      // Step 3: Check if vendor already exists for this user
+      const existingVendor = await vendorsModel
+        .findOne({ user: user._id })
+        .session(session);
+
+      if (existingVendor) {
+        if (existingVendor.isVarified) {
+          throw new Error("You are already a verified vendor.");
+        } else {
+          throw new Error(
+            "You have already submitted a vendor request. It is pending admin verification."
+          );
+        }
+      }
+
+      // Create vendor using user id
+      const vendor = await vendorsModel.create(
+        [
+          {
+            user: user._id,
+            shopName: payload.shopName,
+            shopEmail: payload.shopEmail,
+            shopPhone: payload.shopPhone,
+            shopAddress: payload.shopAddress,
+            description: payload.description,
+            logo: payload.logo,
+            isVarified: false,
+          },
+        ],
+        { session }
+      );
+
+      await session.commitTransaction();
+      session.endSession();
+
+      return vendor[0];
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new Error(`${error.message}`);

@@ -36,16 +36,6 @@ const vendorsSchema = new mongoose.Schema<Ivendors>(
       type: Number,
       default: 0,
     },
-
-    // soft delete
-    isActive: {
-      type: Boolean,
-      default: true,},
-
-    isDelete: {
-      type: Boolean,
-      default: false,
-    },
   },
   { timestamps: true }
 );
