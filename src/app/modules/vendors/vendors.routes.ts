@@ -29,7 +29,7 @@ router.post(
   hashPassword,
   vendorsController.postVendors
 );
-router.get("/get_all_vendors", vendorsController.getAllVendors);
+router.get("/get_all_varified_vendors", vendorsController.getAllVendors);
 router.get("/get_single_vendors/:id", vendorsController.getSingleVendors);
 router.put(
   "/update_vendors/:id",

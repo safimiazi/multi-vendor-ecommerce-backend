@@ -47,8 +47,6 @@ export const vendorsService = {
         .findOne({ user: user._id })
         .session(session);
 
-
-
       // Create vendor using user id
       const vendor = await vendorsModel.create(
         [
@@ -87,7 +85,28 @@ export const vendorsService = {
         .paginate()
         .fields();
 
-      const result = await service_query.modelQuery;
+      let result : any = await service_query.modelQuery.populate({
+        path: "user",
+        match: { isDelete: false },
+        select: "-password"
+      });
+
+      result = result.map((item: any) => {
+        const vendorData = item.toObject();
+        return {
+          ...vendorData,
+          user: {
+            ...vendorData.user,
+            image: vendorData.user.image
+              ? `${process.env.BASE_URL}/${vendorData.user.image?.replace(/\\/g, "/")}`
+              : null,
+          },
+          logo: vendorData.logo
+            ? `${process.env.BASE_URL}/${vendorData.logo?.replace(/\\/g, "/")}`
+            : null,
+        };
+      });
+   
       const meta = await service_query.countTotal();
       return {
         result,

@@ -28,6 +28,10 @@ const vendorsSchema = new mongoose.Schema<Ivendors>(
     description: {
       type: String,
     },
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
     isVarified: {
       type: Boolean,
       default: false,
@@ -36,6 +40,10 @@ const vendorsSchema = new mongoose.Schema<Ivendors>(
       type: Number,
       default: 0,
     },
+    isDelete: {
+      type: Boolean,
+      default: false,
+    }
   },
   { timestamps: true }
 );

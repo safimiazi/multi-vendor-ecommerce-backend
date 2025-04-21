@@ -63,7 +63,10 @@ export const attributeService = {
     try {
       let result: any = await attributeModel
         .findById(id)
-        .populate("attributeOption");
+        .populate({
+          path: "attributeOption",
+          match: { isDelete: false },
+        });
       if (!result) {
         throw new AppError(status.NOT_FOUND, "attribute not found");
       }

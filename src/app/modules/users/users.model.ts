@@ -30,7 +30,6 @@ const usersSchema = new mongoose.Schema<Iusers>(
       default: "customer",
     },
 
-    // soft delete
     isActive: {
       type: Boolean,
       default: true,
