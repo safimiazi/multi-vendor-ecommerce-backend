@@ -85,10 +85,10 @@ export const vendorsService = {
         .paginate()
         .fields();
 
-      let result : any = await service_query.modelQuery.populate({
+      let result: any = await service_query.modelQuery.populate({
         path: "user",
         match: { isDelete: false },
-        select: "-password"
+        select: "-password",
       });
 
       result = result.map((item: any) => {
@@ -98,7 +98,10 @@ export const vendorsService = {
           user: {
             ...vendorData.user,
             image: vendorData.user.image
-              ? `${process.env.BASE_URL}/${vendorData.user.image?.replace(/\\/g, "/")}`
+              ? `${process.env.BASE_URL}/${vendorData.user.image?.replace(
+                  /\\/g,
+                  "/"
+                )}`
               : null,
           },
           logo: vendorData.logo
@@ -106,7 +109,7 @@ export const vendorsService = {
             : null,
         };
       });
-   
+
       const meta = await service_query.countTotal();
       return {
         result,
@@ -122,7 +125,44 @@ export const vendorsService = {
   },
   async getSingleVendorsFromDB(id: string) {
     try {
-      return await vendorsModel.findById(id);
+      let result: any = await vendorsModel.findOne({ _id: id }).populate({
+        path: "user",
+        match: { isDelete: false },
+        select: "-password",
+      });
+
+      if (!result) {
+        throw new AppError(status.NOT_FOUND, "vendor not found");
+      }
+      if (result.user.isDelete) {
+        throw new AppError(status.NOT_FOUND, "vendor user is deleted");
+      }
+      if (!result.user.isActive) {
+        throw new AppError(status.NOT_FOUND, "vendor user not active");
+      }
+      if (result.isDelete) {
+        throw new AppError(status.NOT_FOUND, "vendor is already deleted");
+      }
+      if (!result.isActive) {
+        throw new AppError(status.NOT_FOUND, "vendor is not active");
+      }
+      
+
+      result = {
+        ...result,
+        user: {
+          ...result.user,
+          image: result.user.image
+            ? `${process.env.BASE_URL}/${result.user.image?.replace(
+                /\\/g,
+                "/"
+              )}`
+            : null,
+        },
+        logo: result.logo
+          ? `${process.env.BASE_URL}/${result.logo?.replace(/\\/g, "/")}`
+          : null,
+      };
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new Error(`${error.message}`);
@@ -131,19 +171,22 @@ export const vendorsService = {
       }
     }
   },
-  async updateVendorsIntoDB(data: any) {
+  async updateVendorsIntoDB(data: any, id: string) {
     try {
-      const isDeleted = await vendorsModel.findOne({ _id: data.id });
-      if (isDeleted?.isDelete) {
-        throw new AppError(status.NOT_FOUND, "vendors is already deleted");
+      const vendor = await vendorsModel.findOne({ _id: 
+        id });
+      if (vendor?.isDelete) {
+        throw new AppError(status.NOT_FOUND, "vendor is already deleted");
+      }
+      if (!vendor?.isActive) {
+        throw new AppError(status.NOT_FOUND, "vendor is not active");
       }
 
-      const result = await vendorsModel.updateOne({ _id: data.id }, data, {
+      const result = await vendorsModel.updateOne({ _id: 
+        id }, data, {
         new: true,
       });
-      if (!result) {
-        throw new Error("vendors not found.");
-      }
+   
       return result;
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -159,7 +202,10 @@ export const vendorsService = {
       const isExist = await vendorsModel.findOne({ _id: id });
 
       if (!isExist) {
-        throw new AppError(status.NOT_FOUND, "vendors not found");
+        throw new AppError(status.NOT_FOUND, "vendor not found");
+      }
+      if (isExist?.isDelete) {
+        throw new AppError(status.NOT_FOUND, "vendor is already deleted");
       }
 
       // Step 4: Delete the home vendors from the database

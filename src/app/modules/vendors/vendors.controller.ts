@@ -35,7 +35,8 @@ const getSingleVendors = catchAsync(async (req: Request, res: Response) => {
 });
 
 const updateVendors = catchAsync(async (req: Request, res: Response) => {
-  const result = await vendorsService.updateVendorsIntoDB(req.body);
+  const { id } = req.params;
+  const result = await vendorsService.updateVendorsIntoDB(req.body, id);
   sendResponse(res, {
     statusCode: status.OK,
     success: true,
