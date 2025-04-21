@@ -9,7 +9,6 @@ import { authenticate, authorize } from "../../middlewares/authGuard";
 import { ROLE } from "../../constant/role";
 import { getMuler } from "../../middlewares/multer";
 import { photoComposure } from "../../middlewares/photoComposure";
-import { processImage } from "../../middlewares/processImage";
 import { processMedia } from "../../middlewares/processMedia";
 
 const router = express.Router();

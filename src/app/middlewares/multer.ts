@@ -1,10 +1,8 @@
-
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import multer from "multer";
 import fs from "fs";
 import path from "path";
 import { error } from "console";
-
 
 interface getMulterProps {
   upload_file_destination_path: any;
@@ -53,18 +51,13 @@ export const getMuler = ({
   //     return cb(null, true); // Accept the file
   //   } else {
   //     return cb(
-    
+
   //       new Error(`You can only upload images of type: ${images}.`),
   //       false
   //     ); // Reject the file
   //   }
   // };
 
-
-  
-  
-  
-  
   // File filter function (new version for all types like image or video file)
   const fileFilter = (
     regex: RegExp,
@@ -86,21 +79,15 @@ export const getMuler = ({
       "video/ogg",
       "video/quicktime", // .mov
     ];
-    
-  
+
     const mimeType = acceptedMimeTypes.includes(file.mimetype.toLowerCase());
-    console.log("extName", extName);
-  console.log("mimeType", mimeType);
+
     if (mimeType && extName) {
       return cb(null, true); // Accept file
     } else {
-      return cb(
-        new Error(`Only files of type: ${images} are allowed.`),
-        false
-      );
+      return cb(new Error(`Only files of type: ${images} are allowed.`), false);
     }
   };
-  
 
   return multer({
     storage: storage,
