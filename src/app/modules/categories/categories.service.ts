@@ -32,7 +32,10 @@ export const categoriesService = {
         .paginate()
         .fields();
 
-      let result = await service_query.modelQuery.populate("parentCategory");
+      let result = await service_query.modelQuery.populate({
+        path: "parentCategory",
+        match: { isDelete: false },
+      });
 
       result = result.map((item: any) => {
         const data = item.toObject();

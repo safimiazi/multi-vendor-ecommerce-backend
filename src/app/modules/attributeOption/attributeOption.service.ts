@@ -66,7 +66,15 @@ export const attributeOptionService = {
   async getSingleAttributeOptionFromDB(id: string) {
     try {
       let result: any = await attributeOptionModel.findById(id);
-
+      if (!result) {
+        throw new AppError(status.NOT_FOUND, "attributeOption not found");
+      }
+      if (result?.isDelete) {
+        throw new AppError(status.NOT_FOUND, "attributeOption is already deleted");
+      }
+      if (!result?.isActive) {
+        throw new AppError(status.NOT_FOUND, "attributeOption is not active");
+      }
       result = {
         ...result.toObject(),
         image: result.image

@@ -29,14 +29,17 @@ export const attributeService = {
         .paginate()
         .fields();
 
-      let result = await service_query.modelQuery.populate("attributeOption");
+      let result = await service_query.modelQuery.populate({
+        path: "attributeOption",
+        match: { isDelete: false },
+      });
 
       result = result.map((item: any) => {
         const attributeData = item.toObject();
         return {
           ...attributeData,
           attributeOption: attributeData.attributeOption.map((option: any) => ({
-            ...option.toObject(),
+            ...option,
             image: option.image
               ? `${process.env.BASE_URL}/${option.image?.replace(/\\/g, "/")}`
               : null,
@@ -58,26 +61,28 @@ export const attributeService = {
   },
   async getSingleAttributeFromDB(id: string) {
     try {
-      const attribute = await attributeModel.findOne({ _id: id });
-      if (attribute?.isDelete) {
-        throw new AppError(status.NOT_FOUND, "attribute is already deleted");
-      }
-      if (!attribute?.isActive) {
-        throw new AppError(status.NOT_FOUND, "attribute is not active");
-      }
-
-      const result = await attributeModel
+      let result: any = await attributeModel
         .findById(id)
         .populate("attributeOption");
       if (!result) {
         throw new AppError(status.NOT_FOUND, "attribute not found");
       }
-      result.attributeOption = (result.attributeOption ?? []).map((option: any) => ({
-        ...option.toObject(),  
-        image: option.image
-          ? `${process.env.BASE_URL}/${option.image?.replace(/\\/g, "/")}`
-          : null,
-      }));
+      if (result?.isDelete) {
+        throw new AppError(status.NOT_FOUND, "attribute is already deleted");
+      }
+      if (!result?.isActive) {
+        throw new AppError(status.NOT_FOUND, "attribute is not active");
+      }
+
+      result = {
+        ...result.toObject(),
+        attributeOption: result.attributeOption.map((option: any) => ({
+          ...option?.toObject(),
+          image: option.image
+            ? `${process.env.BASE_URL}/${option.image?.replace(/\\/g, "/")}`
+            : null,
+        })),
+      };
 
       return result;
     } catch (error: unknown) {
@@ -105,7 +110,7 @@ export const attributeService = {
       const result = await attributeModel.updateOne({ _id: id }, data, {
         new: true,
       });
-   
+
       return result;
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -130,8 +135,6 @@ export const attributeService = {
       if (!isExist.isActive) {
         throw new AppError(status.NOT_FOUND, "attribute already inactive");
       }
-
-   
 
       // Step 4: Delete the home attribute from the database
       await attributeModel.updateOne({ _id: id }, { isDelete: true });
