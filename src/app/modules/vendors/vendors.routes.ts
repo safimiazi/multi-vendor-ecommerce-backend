@@ -9,22 +9,22 @@ import hashPassword from "../../middlewares/hashPassword";
 import { getMuler } from "../../middlewares/multer";
 import { processImage } from "../../middlewares/processImage";
 import { photoComposure } from "../../middlewares/photoComposure";
+import { checkVendorAndCleanLogoUpload } from "../../middlewares/checkVendorAndCleanLogoUpload";
 
 const router = express.Router();
 const { configurableCompression } = photoComposure();
 
 router.post(
   "/vendor_request",
-    getMuler({
-      upload_file_destination_path: "uploads",
-      regex: /\.(jpg|jpeg|png|webp)$/,
-      images: "jpg, jpeg, png, webp",
-    }).fields([
-      { name: "logo", maxCount: 1 }, 
-    ]),
-  
-    configurableCompression("jpeg", 60),
-    processImage({ fieldName: "logo" }),
+  getMuler({
+    upload_file_destination_path: "uploads",
+    regex: /\.(jpg|jpeg|png|webp)$/,
+    images: "jpg, jpeg, png, webp",
+  }).fields([{ name: "logo", maxCount: 1 }]),
+
+  configurableCompression("jpeg", 60),
+  processImage({ fieldName: "logo" }),
+  checkVendorAndCleanLogoUpload,
   validateRequest(vendorsPostValidation),
   hashPassword,
   vendorsController.postVendors

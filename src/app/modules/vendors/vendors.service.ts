@@ -47,15 +47,7 @@ export const vendorsService = {
         .findOne({ user: user._id })
         .session(session);
 
-      if (existingVendor) {
-        if (existingVendor.isVarified) {
-          throw new Error("You are already a verified vendor.");
-        } else {
-          throw new Error(
-            "You have already submitted a vendor request. It is pending admin verification."
-          );
-        }
-      }
+
 
       // Create vendor using user id
       const vendor = await vendorsModel.create(
