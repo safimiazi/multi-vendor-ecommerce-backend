@@ -38,27 +38,69 @@ export const getMuler = ({
     },
   });
 
-  // File filter function
+  // File filter function (old version just for images)
+  // const fileFilter = (
+  //   regex: any,
+  //   images: any,
+  //   file: Express.Multer.File,
+  //   cb: any
+  // ) => {
+  //   const mimeRegex = /^image\/(jpg|jpeg|png|gif)$/;
+
+  //   const extName = regex.test(path.extname(file?.originalname).toLowerCase());
+  //   const mimeType = mimeRegex.test(file?.mimetype);
+  //   if (mimeType && extName) {
+  //     return cb(null, true); // Accept the file
+  //   } else {
+  //     return cb(
+    
+  //       new Error(`You can only upload images of type: ${images}.`),
+  //       false
+  //     ); // Reject the file
+  //   }
+  // };
+
+
+  
+  
+  
+  
+  // File filter function (new version for all types like image or video file)
   const fileFilter = (
-    regex: any,
-    images: any,
+    regex: RegExp,
+    images: string,
     file: Express.Multer.File,
     cb: any
   ) => {
-    const mimeRegex = /^image\/(jpg|jpeg|png|gif)$/;
-
-    const extName = regex.test(path.extname(file?.originalname).toLowerCase());
-    const mimeType = mimeRegex.test(file?.mimetype);
+    const extName = regex.test(path.extname(file.originalname).toLowerCase());
+    const acceptedMimeTypes = [
+      // Images
+      "image/jpeg",
+      "image/jpg",
+      "image/png",
+      "image/webp",
+      // Videos
+      "video/mp4",
+      "video/mpeg",
+      "video/webm",
+      "video/ogg",
+      "video/quicktime", // .mov
+    ];
+    
+  
+    const mimeType = acceptedMimeTypes.includes(file.mimetype.toLowerCase());
+    console.log("extName", extName);
+  console.log("mimeType", mimeType);
     if (mimeType && extName) {
-      return cb(null, true); // Accept the file
+      return cb(null, true); // Accept file
     } else {
       return cb(
-    
-        new Error(`You can only upload images of type: ${images}.`),
+        new Error(`Only files of type: ${images} are allowed.`),
         false
-      ); // Reject the file
+      );
     }
   };
+  
 
   return multer({
     storage: storage,

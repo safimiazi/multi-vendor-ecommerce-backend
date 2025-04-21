@@ -5,14 +5,41 @@ import {
   productsPostValidation,
   productsUpdateValidation,
 } from "./products.validation";
+import { authenticate, authorize } from "../../middlewares/authGuard";
+import { ROLE } from "../../constant/role";
+import { getMuler } from "../../middlewares/multer";
+import { photoComposure } from "../../middlewares/photoComposure";
+import { processImage } from "../../middlewares/processImage";
+import { processMedia } from "../../middlewares/processMedia";
 
 const router = express.Router();
+const { configurableCompression } = photoComposure();
 
 router.post(
-  "/post_products",
-  validateRequest(productsPostValidation),
-  productsController.postProducts
-);
+    "/post_products",
+    authenticate,
+    authorize(ROLE.VENDOR, ROLE.ADMIN),
+    getMuler({
+      upload_file_destination_path: "uploads",
+      regex: /\.(jpg|jpeg|png|webp|mp4|mov)$/,
+      images: "jpg, jpeg, png, webp",
+    }).fields([
+      { name: "images", maxCount: 10 },
+      { name: "thumbnail", maxCount: 1 },
+      { name: "video", maxCount: 1 },
+    ]),
+    configurableCompression("jpeg", 60), // optional for images
+    processMedia({
+      fields: [
+        { fieldName: "images", isMultiple: true },
+        { fieldName: "thumbnail" },
+        { fieldName: "video" },
+      ],
+    }),
+    validateRequest(productsPostValidation),
+    productsController.postProducts
+  );
+  
 router.get("/get_all_products", productsController.getAllProducts);
 router.get("/get_single_products/:id", productsController.getSingleProducts);
 router.put(
