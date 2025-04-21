@@ -39,7 +39,7 @@ export const productsService = {
         .paginate()
         .fields();
 
-      const result = await service_query.modelQuery
+      let result : any = await service_query.modelQuery
         .populate({
           path: "brand",
           match: { isDelete: false },
@@ -55,6 +55,11 @@ export const productsService = {
         .populate({
           path: "vendor",
           match: { isDelete: false },
+          populate: {
+            path: "user",
+            match: { isDelete: false },
+            select: "-password",
+          },
         })
         .populate({
           path: "variant",
@@ -66,7 +71,88 @@ export const productsService = {
           }
         });
 
-        console.log(result);
+        result = result.map((item: any) => {
+          const productData = item.toObject();
+          return {
+            ...productData,
+            images: productData.images.map((image: string) => {
+              return image
+                ? `${process.env.BASE_URL}/${image.replace(/\\/g, "/")}`
+                : null;
+            }),
+            thumbnail: productData.thumbnail
+              ? `${process.env.BASE_URL}/${productData.thumbnail.replace(
+                  /\\/g,
+                  "/"
+                )}`
+              : null,
+            video: productData.video
+              ? `${process.env.BASE_URL}/${productData.video.replace(
+                  /\\/g,
+                  "/"
+                )}`
+              : null,
+            brand: {
+              ...productData.brand,
+              brandImage: productData.brand.brandImage
+                ? `${process.env.BASE_URL}/${productData.brand.brandImage.replace(
+                    /\\/g,
+                    "/"
+                  )}`
+                : null,
+            },
+            category: {
+              ...productData.category,
+              image: productData.category.image   
+                ? `${process.env.BASE_URL}/${productData.category.image.replace(
+                    /\\/g,
+                    "/"
+                  )}`
+                : null,
+            },
+            subcategories: productData.subcategories.map((subcategory: any) => ({
+              ...subcategory,
+              image: subcategory.image
+                ? `${process.env.BASE_URL}/${subcategory.image.replace(
+                    /\\/g,
+                    "/"
+                  )}`
+                : null,
+            })),
+            vendor: {
+              ...productData.vendor,
+              logo: productData.vendor.logo
+                ? `${process.env.BASE_URL}/${productData.vendor.logo.replace(
+                    /\\/g,
+                    "/"
+                  )}`
+                : null,
+              user: {
+                ...productData.vendor.user,
+                image: productData.vendor.user.image
+                  ? `${process.env.BASE_URL}/${productData.vendor.user.image.replace(
+                      /\\/g,
+                      "/"
+                    )}`
+                  : null,
+              },
+            },
+            variant: productData.variant.map((variant: any) => ({
+              ...variant,
+              attributeOption: variant.attributeOption.map(
+                (option: any) => ({
+                  ...option,
+                  image: option.image
+                    ? `${process.env.BASE_URL}/${option.image.replace(
+                        /\\/g,
+                        "/"
+                      )}`
+                    : null,
+                })
+              ),
+            })),
+          };
+        }); 
       const meta = await service_query.countTotal();
       return {
         result,

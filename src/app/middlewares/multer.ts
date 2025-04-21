@@ -28,6 +28,10 @@ export const getMuler = ({
         file?.originalname
           .replace(extention, "")
           .toLowerCase()
+          .replace(/[^a-z0-9]/gi, "-") // replace everything not a-z, A-Z, 0-9 with "-"
+          .replace(/-+/g, "-") // collapse multiple dashes
+          .replace(/^-|-$/g, "") // remove leading/trailing dashes
+
           .split(" ")
           .join("-") +
         "-" +
